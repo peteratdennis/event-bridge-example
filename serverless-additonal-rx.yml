@@ -19,8 +19,7 @@ custom:
   serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
 
   busServiceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
-  # yuck, there must be a better way to put the arn here. (Fn::Join doesn't do it)
-  eventBusArn: ${env:EVENTBRIDGE_EXAMPLE_BUS_ARN}
+  eventBusArn: ${cf:${self:custom.busServiceName}-dev.ExampleBus}
 
 functions:
   additionalrx:

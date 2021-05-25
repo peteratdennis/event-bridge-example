@@ -27,6 +27,19 @@ custom:
   serviceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
   eventBusName: ${env:EVENTBRIDGE_EXAMPLE_BUSNAME, "${self:service}-${self:provider.stage}-bus"}
   serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
+  eventBusArn:
+    Fn::Join:
+    - ''
+    - - 'arn:aws:events:'
+      - Ref: 'AWS::Region'
+      - ':'
+      - Ref: 'AWS::AccountId'
+      - ':event-bus/'
+      - ${self:custom.serviceName}
+      - '-'
+      - ${self:provider.stage}
+      - '-'
+      - 'bus'
 
 functions:
   rx:
@@ -40,3 +53,10 @@ functions:
 
   tx:
     handler: src/lambda/tx.handler
+
+resources:
+  Outputs:
+    ExampleBus:
+      Value: ${self:custom.eventBusArn}
+      Export:
+        Name: ExampleBus
