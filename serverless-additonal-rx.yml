@@ -1,0 +1,33 @@
+# export EVENTBRIDGE_EXAMPLE_ADDITIONAL_SERVICE=my-eb-exp
+# export EVENTBRIDGE_EXAMPLE_BUS_ARN=arn:aws:events:eu-west-1:xxxx:event-bus/eventbridge-example-dev-bus
+service: ${self:custom.serviceName}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: ${self:custom.serviceRegion}
+  logRetentionInDays: 7
+  versionFunctions: false
+
+package:
+  exclude:
+    - node_modules/aws-sdk/**
+
+custom:
+  serviceName: ${env:EVENTBRIDGE_EXAMPLE_ADDITIONAL_SERVICE, "eventbridge-additional-example"}
+  serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
+
+  busServiceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
+  # yuck, there must be a better way to put the arn here. (Fn::Join doesn't do it)
+  eventBusArn: ${env:EVENTBRIDGE_EXAMPLE_BUS_ARN}
+
+functions:
+  additionalrx:
+    handler: src/lambda/additionalrx.handler
+    events:
+     - eventBridge:
+        eventBus: ${self:custom.eventBusArn}
+        pattern:
+           source:
+             - dennis.experimental.event

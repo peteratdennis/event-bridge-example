@@ -4,6 +4,7 @@ Using AWS Event Bridge
 
 Useful links:
 - https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html
+- https://www.serverless.com/framework/docs/providers/aws/events/event-bridge/
 - https://www.serverless.com/blog/eventbridge-use-cases-and-tutorial
 - https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EventBridge.html#putEvents-property
 

@@ -1,0 +1,49 @@
+# Another service that publishes an event to the main service.
+
+# export EVENTBRIDGE_EXAMPLE_OTHER_SERVICE=my-other-eb-exp
+service: ${self:custom.serviceName}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: ${self:custom.serviceRegion}
+  logRetentionInDays: 7
+  versionFunctions: false
+
+  environment:
+    eventBusArn: ${self:custom.eventBusArn}
+    serviceRegion: ${self:custom.serviceRegion}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "events:PutEvents"
+      Resource: "*"
+
+package:
+  exclude:
+    - node_modules/aws-sdk/**
+
+custom:
+  serviceName: ${env:EVENTBRIDGE_EXAMPLE_OTHER_SERVICE, "eventbridge-other-example"}
+  busServiceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
+  #eventBusName: ${env:EVENTBRIDGE_EXAMPLE_BUSNAME, "${self:service}-${self:provider.stage}-bus"}
+  eventBusArn:
+    Fn::Join:
+    - ''
+    - - 'arn:aws:events:'
+      - Ref: 'AWS::Region'
+      - ':'
+      - Ref: 'AWS::AccountId'
+      - ':event-bus/'
+      - ${self:custom.busServiceName}
+      - '-'
+      - ${self:provider.stage}
+      - '-'
+      - 'bus'
+  serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
+
+functions:
+  othertx:
+    handler: src/lambda/othertx.handler
