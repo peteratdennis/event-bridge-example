@@ -1,0 +1,22 @@
+{
+  "name": "event-bridge-example",
+  "version": "0.0.1",
+  "description": "Serverless Event Bridge example",
+  "main": "index.js",
+  "engines": {
+    "node": ">=14.1.0"
+  },
+  "repository": "git@github.com:peteratdennis/event-bridge-example.git",
+  "author": "peteratdennis <peter_clarke@dennis.co.uk>",
+  "license": "MIT",
+  "scripts": {
+    "sls": "sls",
+    "deploy": "sls deploy --verbose"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.346.0"
+  },
+  "devDependencies": {
+    "serverless": "^1.39.1"
+  }
+}
