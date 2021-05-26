@@ -1,4 +1,4 @@
-# export EVENTBRIDGE_EXAMPLE_SERVICE=my-eb-exp
+# export EVENTBRIDGE_EXAMPLE_SERVICE=my-eventbridge
 service: ${self:custom.serviceName}
 
 provider:
@@ -35,15 +35,15 @@ custom:
       - ':'
       - Ref: 'AWS::AccountId'
       - ':event-bus/'
-      - ${self:custom.serviceName}
+      - ${self:service}
       - '-'
       - ${self:provider.stage}
       - '-'
       - 'bus'
 
 functions:
-  rx:
-    handler: src/lambda/rx.handler
+  Consumer:
+    handler: src/lambda/main_service/Consumer.handler
     events:
      - eventBridge:
         eventBus: ${self:custom.eventBusName}
@@ -51,8 +51,8 @@ functions:
            source:
              - dennis.experimental.event
 
-  tx:
-    handler: src/lambda/tx.handler
+  Producer:
+    handler: src/lambda/main_service/Producer.handler
 
 resources:
   Outputs:

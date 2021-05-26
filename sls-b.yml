@@ -1,5 +1,5 @@
-# export EVENTBRIDGE_EXAMPLE_ADDITIONAL_SERVICE=my-eb-exp
-# export EVENTBRIDGE_EXAMPLE_BUS_ARN=arn:aws:events:eu-west-1:xxxx:event-bus/eventbridge-example-dev-bus
+# export EVENTBRIDGE_EXAMPLE_SERVICE_B=my-eventbridge-b
+
 service: ${self:custom.serviceName}
 
 provider:
@@ -15,15 +15,15 @@ package:
     - node_modules/aws-sdk/**
 
 custom:
-  serviceName: ${env:EVENTBRIDGE_EXAMPLE_ADDITIONAL_SERVICE, "eventbridge-additional-example"}
+  serviceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE_B, "eventbridge-example-b"}
   serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
 
   busServiceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
   eventBusArn: ${cf:${self:custom.busServiceName}-dev.ExampleBus}
 
 functions:
-  additionalrx:
-    handler: src/lambda/additionalrx.handler
+  ConsumerB:
+    handler: src/lambda/service_b/Consumer.handler
     events:
      - eventBridge:
         eventBus: ${self:custom.eventBusArn}

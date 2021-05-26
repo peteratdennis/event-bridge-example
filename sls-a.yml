@@ -1,6 +1,6 @@
 # Another service that publishes an event to the main service.
 
-# export EVENTBRIDGE_EXAMPLE_OTHER_SERVICE=my-other-eb-exp
+# export EVENTBRIDGE_EXAMPLE_SERVICE_A=my-eventbridge-a
 service: ${self:custom.serviceName}
 
 provider:
@@ -26,9 +26,8 @@ package:
     - node_modules/aws-sdk/**
 
 custom:
-  serviceName: ${env:EVENTBRIDGE_EXAMPLE_OTHER_SERVICE, "eventbridge-other-example"}
+  serviceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE_A, "eventbridge-example-a"}
   busServiceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
-  #eventBusName: ${env:EVENTBRIDGE_EXAMPLE_BUSNAME, "${self:service}-${self:provider.stage}-bus"}
   eventBusArn:
     Fn::Join:
     - ''
@@ -45,5 +44,5 @@ custom:
   serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
 
 functions:
-  othertx:
-    handler: src/lambda/othertx.handler
+  ProducerA:
+    handler: src/lambda/service_a/Producer.handler
