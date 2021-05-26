@@ -10,14 +10,22 @@ Useful links:
 
 ## Deploy
 
+Build the dependencies: `yarn`
+
+First deploy the infrastructure (the custom event bus).
+- export a name for the service: `export EVENTBRIDGE_EXAMPLE_SERVICE=my-eventbridge-infrastructure`
+
+Then the functions that use the bridge can be deployed.
 - export a name for the service: `export EVENTBRIDGE_EXAMPLE_SERVICE=my-eventbridge`
-- build the dependencies: `yarn`
 - deploy: `yarn deploy`
+
+Examples of using the event bus and consumed by all consumers in the various stacks
+is provided in `sls-a.yml` and `sls-b.yml`.
 
 ## Functions
 
-### tx
-The tx function sends an event to the bus with the custom source of `dennis.experimental.event`
+`yarn sls invoke --function Producer --data='{"some": "stuff"}'`
+will cause both the functions `Consumer` & `ConsumerTwo` to be called.
 
-### rx
-The rx function is the event listener, it just logs the event to the console.
+Calling the producer in the `sls-a` stack will trigger the event listeners in the other stack(s)
+`yarn sls invoke -c sls-a.yml --function ProducerA --data='{"src": "service A"}'`

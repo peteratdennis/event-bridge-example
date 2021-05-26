@@ -2,7 +2,7 @@
 const AWS = require('aws-sdk');
 
 /**
- * sls invoke -c serverless-other-tx.yml --function othertx --data='{"src": "other"}'
+ * sls invoke -c sls_a.yml --function ProducerA --data='{"src": "service A"}'
  */
 exports.handler = async (event) => {
   const eventBridge = new AWS.EventBridge({ region: process.env.serviceRegion });

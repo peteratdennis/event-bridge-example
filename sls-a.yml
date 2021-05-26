@@ -27,21 +27,11 @@ package:
 
 custom:
   serviceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE_A, "eventbridge-example-a"}
-  busServiceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
-  eventBusArn:
-    Fn::Join:
-    - ''
-    - - 'arn:aws:events:'
-      - Ref: 'AWS::Region'
-      - ':'
-      - Ref: 'AWS::AccountId'
-      - ':event-bus/'
-      - ${self:custom.busServiceName}
-      - '-'
-      - ${self:provider.stage}
-      - '-'
-      - 'bus'
   serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
+
+  infraServiceName: ${env:EVENTBRIDGE_EXAMPLE_INFRA_SERVICE, "eventbridge-example-infra"}
+  # NB the event bus must have been created by deploying infrastucture.
+  eventBusArn: ${cf:${self:custom.infraServiceName}-dev.ExampleBusArn}
 
 functions:
   ProducerA:

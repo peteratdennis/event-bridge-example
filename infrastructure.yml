@@ -1,0 +1,40 @@
+
+# Serverless cannot build a custom event bus and multiple lambdas using it in the same stack.
+# This stack provides the custom event bus that functions from other stacks can use.
+# https://github.com/serverless/serverless/issues/6882
+
+# export EVENTBRIDGE_EXAMPLE_SERVICE=my-eventbridge-infrastructure
+service: ${self:custom.serviceName}
+
+provider:
+  name: aws
+  stage: dev
+  region: ${self:custom.serviceRegion}
+
+custom:
+  serviceName: ${env:EVENTBRIDGE_EXAMPLE_INFRA_SERVICE, "eventbridge-example-infra"}
+  serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
+
+  eventBus:
+      NAME:
+        Ref: ExampleEventBus
+      ARN:
+        Fn::GetAtt: [ExampleEventBus, Arn]
+
+resources:
+  Resources:
+    ExampleEventBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: ${self:service}-${self:provider.stage}-bus
+  Outputs:
+    ExampleBusName:
+      Description: Custom EventBridge EventBus name
+      Value: ${self:custom.eventBus.NAME}
+      Export:
+        Name: ExampleBusName
+    ExampleBusArn:
+      Description: Custom EventBridge EventBus ARN
+      Value: ${self:custom.eventBus.ARN}
+      Export:
+        Name: ExampleBusArn

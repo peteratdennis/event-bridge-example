@@ -10,7 +10,7 @@ provider:
   versionFunctions: false
 
   environment:
-    eventBusName: ${self:custom.eventBusName}
+    eventBusArn: ${self:custom.eventBusArn}
     serviceRegion: ${self:custom.serviceRegion}
 
   iamRoleStatements:
@@ -25,38 +25,37 @@ package:
 
 custom:
   serviceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
-  eventBusName: ${env:EVENTBRIDGE_EXAMPLE_BUSNAME, "${self:service}-${self:provider.stage}-bus"}
   serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
-  eventBusArn:
-    Fn::Join:
-    - ''
-    - - 'arn:aws:events:'
-      - Ref: 'AWS::Region'
-      - ':'
-      - Ref: 'AWS::AccountId'
-      - ':event-bus/'
-      - ${self:service}
-      - '-'
-      - ${self:provider.stage}
-      - '-'
-      - 'bus'
+
+  infraServiceName: ${env:EVENTBRIDGE_EXAMPLE_INFRA_SERVICE, "eventbridge-example-infra"}
+  # NB the event bus must have been created by deploying infrastucture.
+  eventBusArn: ${cf:${self:custom.infraServiceName}-dev.ExampleBusArn}
+
 
 functions:
   Consumer:
     handler: src/lambda/main_service/Consumer.handler
     events:
      - eventBridge:
-        eventBus: ${self:custom.eventBusName}
+        eventBus: ${self:custom.eventBusArn}
         pattern:
            source:
              - dennis.experimental.event
 
+  # As the event bus is created in a different stack we can now have
+  # multiple functions using it.
+  # see https://github.com/serverless/serverless/issues/6882
+  ConsumerTwo:
+    handler: src/lambda/main_service/Consumer.handler
+    events:
+     - eventBridge:
+        eventBus: ${self:custom.eventBusArn}
+        pattern:
+          source:
+             - dennis.experimental.event
+          detail:
+            foo:
+              - "bar"
+
   Producer:
     handler: src/lambda/main_service/Producer.handler
-
-resources:
-  Outputs:
-    ExampleBus:
-      Value: ${self:custom.eventBusArn}
-      Export:
-        Name: ExampleBus

@@ -18,8 +18,9 @@ custom:
   serviceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE_B, "eventbridge-example-b"}
   serviceRegion: ${env:EVENTBRIDGE_EXAMPLE_REGION, "eu-west-1"}
 
-  busServiceName: ${env:EVENTBRIDGE_EXAMPLE_SERVICE, "eventbridge-example"}
-  eventBusArn: ${cf:${self:custom.busServiceName}-dev.ExampleBus}
+  infraServiceName: ${env:EVENTBRIDGE_EXAMPLE_INFRA_SERVICE, "eventbridge-example-infra"}
+  # NB the event bus must have been created by deploying infrastucture.
+  eventBusArn: ${cf:${self:custom.infraServiceName}-dev.ExampleBusArn}
 
 functions:
   ConsumerB:
