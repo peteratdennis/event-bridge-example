@@ -19,8 +19,8 @@ Then the functions that use the bridge can be deployed.
 - export a name for the service: `export EVENTBRIDGE_EXAMPLE_SERVICE=my-eventbridge`
 - deploy: `yarn deploy`
 
-Examples of using the event bus and consumed by all consumers in the various stacks
-is provided in `sls-a.yml` and `sls-b.yml`.
+Examples of using the event bus and events being consumed by all consumers in the various stacks
+are provided in `sls-a.yml` and `sls-b.yml`.
 
 ## Functions
 
@@ -31,6 +31,7 @@ will cause both the functions `Consumer` & `ConsumerTwo` to be called.
 contains `foo` with a value of `bar` so
 `yarn sls invoke --function Producer --data='{"some": "stuff"}'`
 will only trigger the `Consumer` function _NOT_ the `ConsumerTwo` function.
+
 
 ### sls-a
 Calling the producer in the `sls-a` stack will trigger the event listeners in the other stack(s)
